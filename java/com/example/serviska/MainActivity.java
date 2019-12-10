@@ -3,12 +3,14 @@ package com.example.serviska;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.serviska.engine.Record;
 import com.example.serviska.engine.RecordManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,11 +24,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    RecordManager recordManager;
+    public static RecordManager recordManager;
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -39,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
 
                 Intent intent = new Intent(getApplicationContext(), AddRecordActivity.class);
-                startActivity(intent);
-                //recordManager.addRecord(R);
+                intent.putExtra("ActualRecord", new Record());
+                startActivityForResult(intent,100);
 
             }
         });
@@ -79,5 +81,18 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode){
+            case 100:{
+                if(resultCode==RESULT_OK){
+                    Record tmp=(Record) data.getSerializableExtra("ActualRecord");
+                    recordManager.addRecord(tmp);
+                    //Toast.makeText(getApplicationContext(),tmp.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

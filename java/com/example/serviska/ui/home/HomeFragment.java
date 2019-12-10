@@ -11,25 +11,38 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.serviska.MainActivity;
 import com.example.serviska.R;
+import com.example.serviska.engine.Record;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private View localRoot;
+
+    private static RecyclerView listRecords;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        localRoot=root;
+        createContent();
+
         return root;
+    }
+
+    private void createContent(){
+        listRecords=localRoot.findViewById(R.id.listRecords);
+        listRecords.setAdapter(new RecordsAdapter(MainActivity.recordManager.getRecords()));
+        listRecords.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    public static void updateAdapter(){
+        listRecords.getAdapter().notifyDataSetChanged();
     }
 }
