@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txtRecordInfo"
+        android:id="@+id/txtRecordInfoEntry"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="#03A9F4"

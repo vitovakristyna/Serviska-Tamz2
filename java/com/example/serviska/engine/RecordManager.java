@@ -15,8 +15,20 @@ public class RecordManager {
 
     public void addRecord(Record R){
         if(R==null)return;
-        HomeFragment.updateAdapter();
         records.add(R);
+        HomeFragment.updateAdapter();
+    }
+
+    public void updateRecord(Record R) {
+        if (records.contains(R)) {
+            records.remove(R);
+            records.add(R);
+        } else
+            addRecord(R);
+    }
+
+    public Record getRecord(int index){
+        return records.get(index);
     }
 
     public Record getLastRecord(){

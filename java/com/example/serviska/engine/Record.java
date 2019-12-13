@@ -11,7 +11,10 @@ public class Record  implements Serializable { //class reprezentující jeden z�
     public String personName, personContact, personInfo;
     public Date recordDate;
 
+    public Boolean isNew;
+
     public Record(){
+        isNew=true;
         try {
             ID= Integer.toString(RecordManager.getNextId());
         }

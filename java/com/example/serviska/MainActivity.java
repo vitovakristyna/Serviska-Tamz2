@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.serviska.engine.Record;
 import com.example.serviska.engine.RecordManager;
+import com.example.serviska.ui.home.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -48,10 +48,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Creating new record...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
-                Intent intent = new Intent(getApplicationContext(), AddRecordActivity.class);
-                intent.putExtra("ActualRecord", new Record());
-                startActivityForResult(intent,100);
+                startRecordActivityStart(new Record());
 
             }
         });
@@ -90,9 +87,14 @@ public class MainActivity extends AppCompatActivity {
                 if(resultCode==RESULT_OK){
                     Record tmp=(Record) data.getSerializableExtra("ActualRecord");
                     recordManager.addRecord(tmp);
-                    //Toast.makeText(getApplicationContext(),tmp.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "MainActivity handler", Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+    public void startRecordActivityStart(Record R){
+        Intent intent = new Intent(getApplicationContext(), manageRecordActivity.class);
+        intent.putExtra("ActualRecord", R);
+        startActivity(intent);
     }
 }
