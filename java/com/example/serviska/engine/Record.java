@@ -28,4 +28,8 @@ public class Record  implements Serializable { //class reprezentující jeden z�
     public String toString(){
         return ID+"->"+deviceName+" "+deviceType;
     }
+
+    public String getFileRecordName(){
+        return (ID+deviceName+personName)+".txt";
+    }
 }

@@ -1,6 +1,9 @@
 package com.example.serviska;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.serviska.engine.Record;
@@ -12,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,12 +36,19 @@ public class MainActivity extends AppCompatActivity {
 
     public static RecordManager recordManager;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 900;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        recordManager=new RecordManager();
+        recordManager=new RecordManager(getApplicationContext());
+        verifyStoragePermissions(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -80,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode){
             case 100:{
@@ -91,10 +102,36 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
     public void startRecordActivityStart(Record R){
         Intent intent = new Intent(getApplicationContext(), manageRecordActivity.class);
         intent.putExtra("ActualRecord", R);
         startActivity(intent);
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have read permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+
+        // Check if we have write permission
+        permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 }

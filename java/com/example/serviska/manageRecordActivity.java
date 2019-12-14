@@ -61,11 +61,19 @@ public class manageRecordActivity extends AppCompatActivity {
         btnOK.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 processRecord();
-                MainActivity.recordManager.updateRecord(ActualRecord);
-                /*Intent resultIntent = new Intent();
-                resultIntent.putExtra("ActualRecord", ActualRecord);
-                MainActivity.recordManager.updateRecord(ActualRecord);
-                setResult(MainActivity.RESULT_OK, resultIntent);*/
+                /*if(ActualRecord.isNew){
+                    ActualRecord.isNew=false;
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("ActualRecord", ActualRecord);
+                    setResult(MainActivity.RESULT_OK, resultIntent);
+                }else{
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("ActualRecord", ActualRecord);
+                    setResult(HomeFragment.RESULT_OK, resultIntent);
+                }*/
+
+                MainActivity.recordManager.updateRecords(ActualRecord);
+
                 finish();
                 return true;
             }

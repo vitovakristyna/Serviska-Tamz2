@@ -56,8 +56,10 @@ public class HomeFragment extends Fragment {
     }
 
     public static void updateAdapter() {
-        synchronized(listRecords.getAdapter()){
-            listRecords.getAdapter().notifyAll();
+        RecordsAdapter adapter=(RecordsAdapter)listRecords.getAdapter();
+
+        synchronized(adapter){
+            adapter.reloadData(MainActivity.recordManager.getRecords());
             localRoot.invalidate();
         }
     }
@@ -68,10 +70,10 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode){
-            case 100:{
+            case 101:{
                 if(resultCode==RESULT_OK){
                     Record tmp=(Record) data.getSerializableExtra("ActualRecord");
                     MainActivity.recordManager.updateRecord(tmp);
@@ -79,7 +81,7 @@ public class HomeFragment extends Fragment {
                 }
             }
         }
-    }
+    }*/
 
 
     /*@Override

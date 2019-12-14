@@ -52,6 +52,11 @@ public class RecordsAdapter extends ArrayAdapter<Record> {
         return row;
     }
 
+    public void reloadData(List<Record> dataNew){
+        records=dataNew;
+        notifyDataSetChanged();
+    }
+
     static class EntryHolder
     {
         TextView txtInfo;
