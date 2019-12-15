@@ -3,6 +3,8 @@ package com.example.serviska.engine;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.example.serviska.ui.home.HomeFragment;
+
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,6 @@ public class FileManager
         context=c;
         files=new ArrayList<>();
         recordList=rclist;
-
-        reloadRecordFiles();
     }
 
     private boolean checkRoot(){
@@ -46,7 +46,7 @@ public class FileManager
 
     private boolean loadRoot(){
         String data=FileLoader.LoadFile(context,rootFile);
-        if(data==null)return false;
+        if(data==null || data.isEmpty())return false;
 
         parseRootData(data);
         return true;
@@ -60,12 +60,31 @@ public class FileManager
 
     public void reloadRecordFiles(){
         if(!checkRoot())return;
-        Toast.makeText(context,"File database load success! Found: "+(files.size()+1),Toast.LENGTH_SHORT).show();
+
+        recordList.clear();
+        Record tmp=null;
+        for(String file : files){
+            if((tmp=loadRecordFile(file))!=null){
+                recordList.add(tmp);
+            }
+            tmp=null;
+        }
+        Toast.makeText(context,"File database load success! Found: "+(recordList.size()),Toast.LENGTH_SHORT).show();
+    }
+
+    private Record loadRecordFile(String file){
+        String data=FileLoader.LoadFile(context,file);
+        if(data==null || data.isEmpty())return null;
+        return parseRecordFile(data);
+    }
+
+    private Record parseRecordFile(String recordData){
+        return FileResolverHelper.convertFileToRecord(recordData);
     }
 
     private void updateFiles(){
         for(Record R : recordList){
-            FileSaver.SaveFile(context,R.getFileRecordName(),R.toString());
+            FileSaver.SaveFile(context,R.getFileRecordName(),R.getDataForRecordFile());
         }
     }
 

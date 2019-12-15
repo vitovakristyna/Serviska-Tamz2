@@ -10,8 +10,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.content.Intent;
 
+import com.example.serviska.engine.FileResolverHelper;
 import com.example.serviska.engine.Record;
 import com.example.serviska.ui.home.HomeFragment;
+
+import java.util.Date;
 
 public class manageRecordActivity extends AppCompatActivity {
 
@@ -60,26 +63,26 @@ public class manageRecordActivity extends AppCompatActivity {
         btnOK=findViewById(R.id.btnOK);
         btnOK.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
                 processRecord();
-                /*if(ActualRecord.isNew){
-                    ActualRecord.isNew=false;
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("ActualRecord", ActualRecord);
-                    setResult(MainActivity.RESULT_OK, resultIntent);
-                }else{
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("ActualRecord", ActualRecord);
-                    setResult(HomeFragment.RESULT_OK, resultIntent);
-                }*/
-
+                if(!chceckRecord()){
+                    Toast.makeText(getApplicationContext(),"Device NAME,TYPE and Person NAME are requied!",Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 MainActivity.recordManager.updateRecords(ActualRecord);
 
                 finish();
                 return true;
             }
+                return false;
+            }
         });
     }
     private void processRecord(){
+        if(ActualRecord.isNew){
+            ActualRecord.recordDate=FileResolverHelper.getDate();
+            ActualRecord.lastTimeStamp= FileResolverHelper.createTimeStamp();
+        }
         ActualRecord.isNew=false;
         ActualRecord.deviceName=txtDeviceName.getText().toString();
         ActualRecord.deviceType=txtDeviceType.getText().toString();
@@ -88,6 +91,13 @@ public class manageRecordActivity extends AppCompatActivity {
         ActualRecord.personName=txtPersonName.getText().toString();
         ActualRecord.personContact=txtPersonContact.getText().toString();
         ActualRecord.personInfo=txtPersonInfo.getText().toString();
+    }
+
+    private boolean chceckRecord(){
+        if(ActualRecord.deviceName.isEmpty())return false;
+        if(ActualRecord.deviceType.isEmpty())return false;
+        if(ActualRecord.personName.isEmpty())return false;
+        return true;
     }
 
     private void loadRecord(Record R){

@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         localRoot=root;
         createContent();
-
+        updateAdapter();
         return root;
     }
 
@@ -84,10 +84,10 @@ public class HomeFragment extends Fragment {
     }*/
 
 
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
         updateAdapter();
-    }*/
+    }
 
 }

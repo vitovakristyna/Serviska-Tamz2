@@ -54,6 +54,7 @@ public class FileLoader {
             String line;
             while((line = reader.readLine())!=null){
                 result += line;
+                result += "\n";
             }
             reader.close();
         }
@@ -74,6 +75,7 @@ public class FileLoader {
             String line;
             while((line = reader.readLine())!=null){
                 result += line;
+                result += "\n";
             }
             reader.close();
         }

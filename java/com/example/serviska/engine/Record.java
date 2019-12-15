@@ -9,7 +9,8 @@ public class Record  implements Serializable { //class reprezentující jeden z�
     public String ID,deviceName,deviceInfo,deviceType;
     public String deviceErrorDescription, deviceCost;
     public String personName, personContact, personInfo;
-    public Date recordDate;
+    public String recordDate;
+    public String lastTimeStamp;
 
     public Boolean isNew;
 
@@ -32,4 +33,13 @@ public class Record  implements Serializable { //class reprezentující jeden z�
     public String getFileRecordName(){
         return (ID+deviceName+personName)+".txt";
     }
+
+    public String getDataForRecordFile(){
+        return FileResolverHelper.convertRecordToFile(this);
+    }
+
+    public Long getTimeStamp(){
+        return ResourceConverter.convertStringToLong(lastTimeStamp);
+    }
+
 }

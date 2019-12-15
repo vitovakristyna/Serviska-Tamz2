@@ -22,6 +22,15 @@ public class ResourceConverter {
             return 0;
         }
     }
+    public static long convertStringToLong(String s){
+        try {
+            return Long.parseLong(s);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
     public static double convertStringToDouble(String s){
         try {
             return Double.parseDouble(s);

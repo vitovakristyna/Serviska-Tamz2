@@ -5,27 +5,57 @@ import android.content.Context;
 import com.example.serviska.ui.home.HomeFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecordManager {
     private List<Record> records=new ArrayList<>();
     private static int nextId=0;
+    private static boolean firstLoad=true;
+
     private Context context;
 
     private FileManager FileManager;
+    private Map<Long,Record> recordsMap;
 
     public RecordManager(Context C){
         context=C;
         FileManager=new FileManager(C,getRecords());
+        recordsMap=new HashMap<>();
+
+        if(firstLoad){
+            FileManager.reloadRecordFiles();
+            refreshNextId();
+            //refreshHashMap();
+        }
+        firstLoad=false;
+    }
+
+    private void refreshHashMap(){
+        recordsMap.clear();
+
+        for(Record r : records){
+            recordsMap.put(r.getTimeStamp(),r);
+        }
+    }
+    private void refreshNextId(){
+        int id=0;
+        for (Record r : records){
+            id=ResourceConverter.convertStringToInt(r.ID);
+            if(id>nextId) nextId=id;
+        }
     }
 
     public static int getNextId() {
+        if(nextId>999)nextId=0;
         return nextId++;
     }
 
     public void addRecord(Record R){
         if(R==null)return;
         records.add(R);
+        //recordsMap.put(R.getTimeStamp(),R);
     }
 
     public void updateRecords(Record R) {
@@ -50,7 +80,7 @@ public class RecordManager {
     }
 
     private boolean findAndReplaceRecord(Record R){
-        Record tmp=findRecordByID(R);
+        Record tmp=findRecordByTimeStamp(R);
         if(tmp==null)return false;
         records.remove(tmp);
         records.add(R);
@@ -63,8 +93,26 @@ public class RecordManager {
         }
         return null;
     }
+    private Record findRecordByTimeStamp(Record R){
+        for (Record record : records){
+            if(record.lastTimeStamp.compareTo(R.lastTimeStamp)==0)return record;
+        }
+        return null;
+    }
+    private Record findRecordByMap(Record R){
+        if(recordsMap.containsKey(R.getTimeStamp())){
+            return recordsMap.get(R.getTimeStamp());
+        }
+        return null;
+    }
 
     public void updateFileRecordDB(){
         FileManager.updateRecordsFiles();
+    }
+
+    public void updateRecordsList(List<Record> data){
+        records.clear();
+        records.addAll(data);
+        HomeFragment.updateAdapter();
     }
 }
