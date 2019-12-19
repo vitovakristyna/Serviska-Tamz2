@@ -17,28 +17,18 @@ public class RecordManager {
     private Context context;
 
     private FileManager FileManager;
-    private Map<Long,Record> recordsMap;
 
     public RecordManager(Context C){
         context=C;
         FileManager=new FileManager(C,getRecords());
-        recordsMap=new HashMap<>();
 
         if(firstLoad){
             FileManager.reloadRecordFiles();
             refreshNextId();
-            //refreshHashMap();
         }
         firstLoad=false;
     }
 
-    private void refreshHashMap(){
-        recordsMap.clear();
-
-        for(Record r : records){
-            recordsMap.put(r.getTimeStamp(),r);
-        }
-    }
     private void refreshNextId(){
         int id=0;
         for (Record r : records){
@@ -55,7 +45,6 @@ public class RecordManager {
     public void addRecord(Record R){
         if(R==null)return;
         records.add(R);
-        //recordsMap.put(R.getTimeStamp(),R);
     }
 
     public void updateRecords(Record R) {
@@ -95,13 +84,7 @@ public class RecordManager {
     }
     private Record findRecordByTimeStamp(Record R){
         for (Record record : records){
-            if(record.lastTimeStamp.compareTo(R.lastTimeStamp)==0)return record;
-        }
-        return null;
-    }
-    private Record findRecordByMap(Record R){
-        if(recordsMap.containsKey(R.getTimeStamp())){
-            return recordsMap.get(R.getTimeStamp());
+            if(record.TimeStamp.compareTo(R.TimeStamp)==0)return record;
         }
         return null;
     }

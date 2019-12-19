@@ -1,6 +1,7 @@
 package com.example.serviska.engine;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -10,12 +11,14 @@ public class Record  implements Serializable { //class reprezentující jeden z�
     public String deviceErrorDescription, deviceCost;
     public String personName, personContact, personInfo;
     public String recordDate;
-    public String lastTimeStamp;
+    public String TimeStamp;
 
     public Boolean isNew;
+    public Boolean hasPhoho;
 
     public Record(){
         isNew=true;
+        hasPhoho=false;
         try {
             ID= Integer.toString(RecordManager.getNextId());
         }
@@ -31,15 +34,17 @@ public class Record  implements Serializable { //class reprezentující jeden z�
     }
 
     public String getFileRecordName(){
-        return (ID+deviceName+personName)+".txt";
+        return TimeStamp+".txt";
     }
+
+    public String getPhotoName(){return  TimeStamp+"_PHOTO.png";}
 
     public String getDataForRecordFile(){
         return FileResolverHelper.convertRecordToFile(this);
     }
 
     public Long getTimeStamp(){
-        return ResourceConverter.convertStringToLong(lastTimeStamp);
+        return ResourceConverter.convertStringToLong(TimeStamp);
     }
 
 }

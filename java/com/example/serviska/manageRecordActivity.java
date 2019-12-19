@@ -1,7 +1,10 @@
 package com.example.serviska;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,16 +13,18 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.content.Intent;
 
+import com.example.serviska.engine.BitMapHolder;
+import com.example.serviska.engine.FileLoader;
 import com.example.serviska.engine.FileResolverHelper;
+import com.example.serviska.engine.FileSaver;
 import com.example.serviska.engine.Record;
-import com.example.serviska.ui.home.HomeFragment;
-
-import java.util.Date;
 
 public class manageRecordActivity extends AppCompatActivity {
 
     private ImageButton btnClose;
     private ImageButton btnOK;
+    private ImageButton btnCamera;
+    private ImageButton btnSpeaker;
     private Record ActualRecord;
 
     private EditText txtDeviceName;
@@ -30,6 +35,8 @@ public class manageRecordActivity extends AppCompatActivity {
     private EditText txtPersonContact;
     private EditText txtPersonInfo;
 
+    private static final int REQUEST_CODE=111;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +46,7 @@ public class manageRecordActivity extends AppCompatActivity {
             finish();
             return;
         }
-
+        BitMapHolder.clearHolder();
         //Toast.makeText(getApplicationContext(), "Working :)"+ActualRecord, Toast.LENGTH_SHORT).show();
 
         txtDeviceName=this.findViewById(R.id.txtDeviceName);
@@ -52,11 +59,14 @@ public class manageRecordActivity extends AppCompatActivity {
 
         loadRecord(ActualRecord);
 
-        btnClose=findViewById(R.id.btnClose);
+        btnClose=findViewById(R.id.btnClosePic);
         btnClose.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                ActualRecord=null;
-                finish();
+                if(event.getAction()==MotionEvent.ACTION_DOWN) {
+                    BitMapHolder.clearHolder();
+                    ActualRecord = null;
+                    finish();
+                }
                 return true;
             }
         });
@@ -77,11 +87,33 @@ public class manageRecordActivity extends AppCompatActivity {
                 return false;
             }
         });
+        btnCamera=findViewById(R.id.btnCamera);
+        btnCamera.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN) {
+                    Intent intent=new Intent(getApplicationContext(),getCameraImageActivity.class);
+                    startActivityForResult(intent,REQUEST_CODE);
+                }
+                return true;
+            }
+        });
+
+        btnSpeaker=findViewById(R.id.btnSpeaker);
+        btnSpeaker.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN) {
+                    Intent intent=new Intent(getApplicationContext(),getSpeakerRerordActivity.class);
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
+
     }
     private void processRecord(){
         if(ActualRecord.isNew){
             ActualRecord.recordDate=FileResolverHelper.getDate();
-            ActualRecord.lastTimeStamp= FileResolverHelper.createTimeStamp();
+            ActualRecord.TimeStamp= FileResolverHelper.createTimeStamp();
         }
         ActualRecord.isNew=false;
         ActualRecord.deviceName=txtDeviceName.getText().toString();
@@ -102,6 +134,9 @@ public class manageRecordActivity extends AppCompatActivity {
 
     private void loadRecord(Record R){
         if(R.isNew)return;
+        if(R.hasPhoho){
+            BitMapHolder.photo= FileLoader.LoadImage(getApplicationContext(),R.getPhotoName());
+        }
 
         Toast.makeText(getApplicationContext(),"Load record for edit...",Toast.LENGTH_SHORT).show();
         txtDeviceName.setText(R.deviceName);
@@ -111,5 +146,18 @@ public class manageRecordActivity extends AppCompatActivity {
         txtPersonName.setText(R.personName);
         txtPersonContact.setText(R.personContact);
         txtPersonInfo.setText(R.personInfo);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode){
+            case REQUEST_CODE:{
+                if(resultCode==RESULT_OK){
+                    if(BitMapHolder.photo!=null)
+                        ActualRecord.hasPhoho=true;
+                        FileSaver.SaveImage(getApplicationContext(),ActualRecord.getPhotoName(),BitMapHolder.photo);
+                }
+            }
+        }
     }
 }

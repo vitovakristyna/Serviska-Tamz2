@@ -17,10 +17,12 @@ public class FileResolverHelper {
     public static final String PERSON_INFO="PERSON_INFO";
     public static final String DATE="DATE";
 
+    public static final String HAS_PHOTO="HAS_PHOTO";
+
 
     public static String convertRecordToFile(Record record){
         String data="";
-        data += TIMESTAMP+"\t"+record.lastTimeStamp+"\n";
+        data += TIMESTAMP+"\t"+record.TimeStamp+"\n";
         data += ID+"\t"+record.ID+"\n";
         data += DEVICE_NAME+"\t"+record.deviceName+"\n";
         data += DEVICE_TYPE+"\t"+record.deviceType+"\n";
@@ -30,6 +32,7 @@ public class FileResolverHelper {
         data += PERSON_CONTACT+"\t"+record.personContact+"\n";
         data += PERSON_INFO+"\t"+record.personInfo+"\n";
         data += DATE+"\t"+record.recordDate+"\n";
+        data += HAS_PHOTO+"\t"+Boolean.toString(record.hasPhoho)+"\n";
         Log.d("info-record","Record "+record.toString()+" parse!");
         return data;
     }
@@ -46,7 +49,7 @@ public class FileResolverHelper {
         if(dataSpit[actualDataIndex].contains(TIMESTAMP)){
             helpIndex=dataSpit[actualDataIndex].lastIndexOf("\t")+1;
             maxIndex=(dataSpit[actualDataIndex].length());
-            record.lastTimeStamp=dataSpit[actualDataIndex].substring(helpIndex,maxIndex);
+            record.TimeStamp=dataSpit[actualDataIndex].substring(helpIndex,maxIndex);
         }else return null;
         actualDataIndex=1;
         if(dataSpit[actualDataIndex].contains(ID)){
@@ -101,6 +104,12 @@ public class FileResolverHelper {
             helpIndex=dataSpit[actualDataIndex].lastIndexOf("\t")+1;
             maxIndex=(dataSpit[actualDataIndex].length());
             record.recordDate=dataSpit[actualDataIndex].substring(helpIndex,maxIndex);
+        }else return null;
+        actualDataIndex=10;
+        if(dataSpit[actualDataIndex].contains(HAS_PHOTO)){
+            helpIndex=dataSpit[actualDataIndex].lastIndexOf("\t")+1;
+            maxIndex=(dataSpit[actualDataIndex].length());
+            record.hasPhoho=Boolean.parseBoolean(dataSpit[actualDataIndex].substring(helpIndex,maxIndex));
         }else return null;
         Log.d("info-record","Record "+record.toString()+" resolve!");
         }

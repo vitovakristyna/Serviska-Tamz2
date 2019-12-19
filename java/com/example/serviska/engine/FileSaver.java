@@ -1,6 +1,7 @@
 package com.example.serviska.engine;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.io.File;
@@ -25,6 +26,19 @@ public class FileSaver {
         try {
             FileOutputStream fos = context.openFileOutput(fn, Context.MODE_PRIVATE);
             fos.write(data.getBytes());
+            fos.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    public static boolean SaveImage(Context context,String fn, Bitmap data){
+        try {
+            FileOutputStream fos = context.openFileOutput(fn, Context.MODE_PRIVATE);
+            data.compress(Bitmap.CompressFormat.PNG,100,fos);
+            fos.flush();
             fos.close();
         }
         catch (Exception e){
